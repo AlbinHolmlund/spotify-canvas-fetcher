@@ -20,11 +20,11 @@ yarn install
 
 ### Use without client id and secret
 
-1. Create a `track_list` file in the root directory of the project. Each line in this file should represent a track, written in the format `track_name@track_id`. For example:
+1. Create a `track_list` file in the root directory of the project. Each line in this file should represent a track, written in the format `track_name@spotify:track:track_id`. For example:
 
 ```
-track_name1@track_id1
-track_name2@track_id2
+track_name1@spotify:track:track_id
+track_name2@spotify:track:track_id2
 ```
 
 2. Run the script with the path where you want to save the videos as the first argument. For example, if you want to save the videos in a directory named `videos`, you would run:
