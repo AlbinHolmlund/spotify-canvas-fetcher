@@ -50,16 +50,16 @@ You can get a Spotify client id and secret by creating a Spotify developer accou
 4. Run the project using the following command:
 
 ```shell
-node index.js artistname
+node index.js "Artist name"
 ```
 
 or
 
 ```shell
-node index.js artistname "./video_path"
+node index.js "Artist name" "./video_path"
 ```
 
-where `artistname` is the name of the artist you want to fetch the canvas videos for and `video_path` is the path to the directory where you want to save the videos. If no path is specified, the videos will be saved in the `canvases` directory in the root of the project.
+where `Artist name` is the name of the artist you want to fetch the canvas videos for and `video_path` is the path to the directory where you want to save the videos. If no path is specified, the videos will be saved in the `canvases` directory in the root of the project.
 
 This will fetch all the canvas videos for the specified artist and save them in the specified directory.
 
