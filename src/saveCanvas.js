@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const axios = require('axios');
 const querystring = require('querystring');
 const getCanvases = require('./_canvasApi.js');
@@ -65,6 +63,7 @@ const saveCanvas = async (trackId, saveTo, name) => {
 
 // If called directly from the command line
 if (require.main === module) {
+	require('dotenv').config();
 	const trackId = process.argv[2];
 	const saveTo = process.argv[3];
 	const name = process.argv[4];
