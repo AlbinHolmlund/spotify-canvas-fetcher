@@ -80,4 +80,7 @@ async function getAllTrackUris(artistNameOrId) {
 	}
 }
 
-module.exports = getAllTrackUris;
+module.exports = {
+	getAllTrackUris,
+	getAccessToken,
+};

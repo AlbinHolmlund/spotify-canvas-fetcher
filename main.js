@@ -2,10 +2,10 @@ require('dotenv').config();
 const fs = require('fs');
 const saveCanvas = require('./src/saveCanvas.js').saveCanvas;
 const getCanvasUrl = require('./src/saveCanvas.js').getCanvasUrl;
-const getTrackIdsFromArtist = require('./src/getTrackIdsFromArtist.js');
+const getAllTrackUris = require('./src/getTrackIdsFromArtist.js').getAllTrackUris;
 
 const getArtistTracks = async (artistName) => {
-    return await getTrackIdsFromArtist(artistName);
+    return await getAllTrackUris(artistName);
 };
 
 const saveCanvases = async () => {
