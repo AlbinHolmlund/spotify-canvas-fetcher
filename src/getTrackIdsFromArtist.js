@@ -83,4 +83,5 @@ async function getAllTrackUris(artistNameOrId) {
 module.exports = {
 	getAllTrackUris,
 	getAccessToken,
+	getArtistId
 };
