@@ -1,10 +1,15 @@
 require('dotenv').config();
 const fs = require('fs');
-const saveCanvas = require('./src/saveCanvas.js');
+const saveCanvas = require('./src/saveCanvas.js').saveCanvas;
+const getCanvasUrl = require('./src/saveCanvas.js').getCanvasUrl;
 const getTrackIdsFromArtist = require('./src/getTrackIdsFromArtist.js');
 
-(async () => {
-    let artistName, saveTo, tracks;
+const getArtistTracks = async (artistName) => {
+    return await getTrackIdsFromArtist(artistName);
+};
+
+const saveCanvases = async () => {
+    let artistName, tracks, saveTo;
     // node main.js "Skräp" "./canvas_files"
     // If a track_list file is provided, use that instead of searching for tracks
     // Every line is a track and it's written like
@@ -54,13 +59,13 @@ const getTrackIdsFromArtist = require('./src/getTrackIdsFromArtist.js');
             return;
         }
 
-        tracks = await getTrackIdsFromArtist(artistName);
+        tracks = await getArtistTracks(artistName);
     } else {
         console.log(`Saving canvases to ${saveTo}`);
     }
     
     console.log(`Found tracks: \n${
-        tracks.map((track, index) => `${index + 1}. ${track.name}`).join('\n')
+        tracks.map((track, index) => `${index + 1}. ${track.name}: ${track.uri}`).join('\n')
     }`);
 
     console.log(`Saving ${tracks.length} canvases`);
@@ -85,4 +90,30 @@ const getTrackIdsFromArtist = require('./src/getTrackIdsFromArtist.js');
     } else {
         console.log('Done! ', 'Saved ', counterSuccessfull, ' canvases to ', saveTo);
     }
-})();
+}
+
+const getCanvasUrls = async (artistName) => {
+    const tracks = await getArtistTracks(artistName);
+    const canvasUrls = [];
+    console.log(`Found ${tracks.length} tracks`);
+    for (const track of tracks) {
+        try{
+            const canvasUrl = await getCanvasUrl(track.uri);
+            if (canvasUrl){
+                track.canvasUrl = canvasUrl;
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    return tracks;
+}
+
+// If called from command line
+if (require.main === module) {
+    saveCanvases();
+}
+
+exports.getArtistTracks = getArtistTracks;
+exports.saveCanvases = saveCanvases;
+exports.getCanvasUrls = getCanvasUrls;

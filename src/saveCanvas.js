@@ -29,29 +29,38 @@ const getCanvasToken = () => {
 		.then(data => data && data.accessToken);
 };
 
-const saveCanvas = async (trackId, saveTo, name) => {
+const downloadCanvas = async (url, saveTo, name) => {
+	const canvas = await axios.get(url, { responseType: 'stream' });
+	let filename = name;
+	if (name) filename = name;
+	const canvasPath = path.join(saveTo, `${filename}.mp4`);
+	// Create the folder if it doesn't exist
+	if (!fs.existsSync(saveTo)) fs.mkdirSync(saveTo);
+	// Save the file
+	canvas.data.pipe(fs.createWriteStream(canvasPath));
+	console.log('Canvas saved to: ', canvasPath);
+	return true;
+}
+
+const getCanvasUrl = async (trackId) => {
 	const canvasToken = await getCanvasToken();
 	const uniqueTracks = [{ track: { uri: trackId } }];
 	const canvasResponse = await getCanvases(uniqueTracks, canvasToken);
 
 	if (canvasResponse && canvasResponse.canvasesList && canvasResponse.canvasesList.length) {
 		const canvasUrl = canvasResponse.canvasesList[0].canvasUrl;
-		console.log('Canvas url: ', canvasUrl);
 		// Download the file from the url and save it to the saveTo path
-		const canvas = await axios.get(canvasUrl, { responseType: 'stream' });
-		let filename = trackId.replace(':', '_');
-		if (name) filename = name;
-		const canvasPath = path.join(saveTo, `${filename}.mp4`);
-		// Create the folder if it doesn't exist
-		if (!fs.existsSync(saveTo)) fs.mkdirSync(saveTo);
-		// Save the file
-		canvas.data.pipe(fs.createWriteStream(canvasPath));
-		console.log('Canvas saved to: ', canvasPath);
-		return true;
+		console.log('Canvas found! Url: ', canvasUrl);
+		return canvasUrl;
 	} else {
 		console.log('No canvas found');
 		return false;
 	}
+};
+
+const saveCanvas = async (trackId, saveTo, name) => {
+	const canvasUrl = await getCanvasUrl(trackId);
+	return canvasUrl && await downloadCanvas(canvasUrl, saveTo, name);
 };
 
 // If called directly from the command line
@@ -62,4 +71,7 @@ if (require.main === module) {
 	saveCanvas(trackId, saveTo, name);
 }
 
-module.exports = saveCanvas;
+module.exports = {
+	getCanvasUrl,
+	saveCanvas
+};
